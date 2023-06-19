@@ -12,7 +12,8 @@ import { MorganModule } from "nest-morgan";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { ServeStaticOptionsService } from "./serveStaticOptions.service";
-import { GraphQLModule } from "@nestjs/graphql";
+import { GqlModuleOptions, GraphQLModule } from "@nestjs/graphql";
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 
 @Module({
   controllers: [],
@@ -31,19 +32,27 @@ import { GraphQLModule } from "@nestjs/graphql";
     ServeStaticModule.forRootAsync({
       useClass: ServeStaticOptionsService,
     }),
-    GraphQLModule.forRootAsync({
-      useFactory: (configService) => {
-        const playground = configService.get("GRAPHQL_PLAYGROUND");
-        const introspection = configService.get("GRAPHQL_INTROSPECTION");
-        return {
-          autoSchemaFile: true,
-          playground,
-          introspection: playground || introspection,
-        };
-      },
-      inject: [ConfigService],
-      imports: [ConfigModule],
-    }),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: true,
+      sortSchema: true,
+      path: '/graphql',
+    })
+    // GraphQLModule.forRootAsync<ApolloDriverConfig>({
+    //   useFactory: async (config: ConfigService) => {
+    //     return {
+    //       driver: ApolloDriver,
+    //       autoSchemaFile: config.get<string>('GRAPHQL_SCHEMA_FILEPATH'),
+    //       sortSchema: true,
+    //       debug: (config.get<string>('NODE_ENV') !== 'production') as boolean,
+    //       uploads: false,
+    //       path: '/graphql',
+    //       introspection: config.get<boolean>('GRAPHQL_INTROSPECTION', false),
+    //     } as GqlModuleOptions;
+    //   },
+    //   inject: [ConfigService],
+    //   imports: [ConfigModule],
+    // }),
   ],
   providers: [],
 })

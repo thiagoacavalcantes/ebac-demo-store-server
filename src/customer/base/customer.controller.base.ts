@@ -255,7 +255,7 @@ export class CustomerControllerBase {
         },
       });
     } catch (error) {
-      if (isRecordNotFoundError(error)) {
+      if (isRecordNotFoundError(error as Error)) {
         throw new errors.NotFoundException(
           `No resource was found for ${JSON.stringify(params)}`
         );
@@ -301,7 +301,7 @@ export class CustomerControllerBase {
         },
       });
     } catch (error) {
-      if (isRecordNotFoundError(error)) {
+      if (isRecordNotFoundError(error as Error)) {
         throw new errors.NotFoundException(
           `No resource was found for ${JSON.stringify(params)}`
         );

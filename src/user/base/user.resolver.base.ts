@@ -1,6 +1,5 @@
 import * as common from "@nestjs/common";
 import * as graphql from "@nestjs/graphql";
-import * as apollo from "apollo-server-express";
 import * as nestAccessControl from "nest-access-control";
 import { GqlDefaultAuthGuard } from "../../auth/gqlDefaultAuth.guard";
 import * as gqlACGuard from "../../auth/gqlAC.guard";
@@ -15,6 +14,7 @@ import { UserFindManyArgs } from "./UserFindManyArgs";
 import { UserFindUniqueArgs } from "./UserFindUniqueArgs";
 import { User } from "./User";
 import { UserService } from "../user.service";
+import { GraphQLError } from "graphql";
 
 @graphql.Resolver(() => User)
 @common.UseGuards(GqlDefaultAuthGuard, gqlACGuard.GqlACGuard)
@@ -113,7 +113,7 @@ export class UserResolverBase {
       const roles = userRoles
         .map((role: string) => JSON.stringify(role))
         .join(",");
-      throw new apollo.ApolloError(
+      throw new GraphQLError(
         `providing the properties: ${properties} on ${"User"} creation is forbidden for roles: ${roles}`
       );
     }
@@ -151,7 +151,7 @@ export class UserResolverBase {
       const roles = userRoles
         .map((role: string) => JSON.stringify(role))
         .join(",");
-      throw new apollo.ApolloError(
+      throw new GraphQLError(
         `providing the properties: ${properties} on ${"User"} update is forbidden for roles: ${roles}`
       );
     }
@@ -162,8 +162,8 @@ export class UserResolverBase {
         data: args.data,
       });
     } catch (error) {
-      if (isRecordNotFoundError(error)) {
-        throw new apollo.ApolloError(
+      if (isRecordNotFoundError(error as Error)) {
+        throw new GraphQLError(
           `No resource was found for ${JSON.stringify(args.where)}`
         );
       }
@@ -182,8 +182,8 @@ export class UserResolverBase {
       // @ts-ignore
       return await this.service.delete(args);
     } catch (error) {
-      if (isRecordNotFoundError(error)) {
-        throw new apollo.ApolloError(
+      if (isRecordNotFoundError(error as Error)) {
+        throw new GraphQLError(
           `No resource was found for ${JSON.stringify(args.where)}`
         );
       }
