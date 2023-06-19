@@ -255,7 +255,7 @@ export class CustomerControllerBase {
         },
       });
     } catch (error) {
-      if (isRecordNotFoundError(error)) {
+      if (isRecordNotFoundError(error as Error)) {
         throw new errors.NotFoundException(
           `No resource was found for ${JSON.stringify(params)}`
         );
@@ -301,7 +301,7 @@ export class CustomerControllerBase {
         },
       });
     } catch (error) {
-      if (isRecordNotFoundError(error)) {
+      if (isRecordNotFoundError(error as Error)) {
         throw new errors.NotFoundException(
           `No resource was found for ${JSON.stringify(params)}`
         );
@@ -338,7 +338,7 @@ export class CustomerControllerBase {
       possession: "any",
       resource: "Order",
     });
-    const results = await this.service.findOrders(params.id, {
+    let results = await this.service.findOrders(params.id, {
       where: query,
       select: {
         createdAt: true,
@@ -363,6 +363,7 @@ export class CustomerControllerBase {
         updatedAt: true,
       },
     });
+    results = results == null ? [] : results
     return results.map((result) => permission.filter(result));
   }
 

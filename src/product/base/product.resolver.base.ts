@@ -1,6 +1,5 @@
 import * as common from "@nestjs/common";
 import * as graphql from "@nestjs/graphql";
-import * as apollo from "apollo-server-express";
 import * as nestAccessControl from "nest-access-control";
 import { GqlDefaultAuthGuard } from "../../auth/gqlDefaultAuth.guard";
 import * as gqlACGuard from "../../auth/gqlAC.guard";
@@ -17,6 +16,7 @@ import { Product } from "./Product";
 import { OrderFindManyArgs } from "../../order/base/OrderFindManyArgs";
 import { Order } from "../../order/base/Order";
 import { ProductService } from "../product.service";
+import { GraphQLError } from "graphql";
 
 @graphql.Resolver(() => Product)
 @common.UseGuards(GqlDefaultAuthGuard, gqlACGuard.GqlACGuard)
@@ -115,7 +115,7 @@ export class ProductResolverBase {
       const roles = userRoles
         .map((role: string) => JSON.stringify(role))
         .join(",");
-      throw new apollo.ApolloError(
+      throw new GraphQLError(
         `providing the properties: ${properties} on ${"Product"} creation is forbidden for roles: ${roles}`
       );
     }
@@ -153,7 +153,7 @@ export class ProductResolverBase {
       const roles = userRoles
         .map((role: string) => JSON.stringify(role))
         .join(",");
-      throw new apollo.ApolloError(
+      throw new GraphQLError(
         `providing the properties: ${properties} on ${"Product"} update is forbidden for roles: ${roles}`
       );
     }
@@ -164,8 +164,8 @@ export class ProductResolverBase {
         data: args.data,
       });
     } catch (error) {
-      if (isRecordNotFoundError(error)) {
-        throw new apollo.ApolloError(
+      if (isRecordNotFoundError(error as Error)) {
+        throw new GraphQLError(
           `No resource was found for ${JSON.stringify(args.where)}`
         );
       }
@@ -186,8 +186,8 @@ export class ProductResolverBase {
       // @ts-ignore
       return await this.service.delete(args);
     } catch (error) {
-      if (isRecordNotFoundError(error)) {
-        throw new apollo.ApolloError(
+      if (isRecordNotFoundError(error as Error)) {
+        throw new GraphQLError(
           `No resource was found for ${JSON.stringify(args.where)}`
         );
       }

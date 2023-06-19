@@ -24,10 +24,15 @@ Your app is ready to be deployed!
 
 Make sure you have Node.js 14, npm, and Docker installed.
 
+- Instal Yarn
+```
+npm install -g yarn
+```
+
 - Install dependencies
 
 ```
-npm install
+yarn install
 ```
 
 - Generate Prisma client
@@ -50,5 +55,5 @@ npm run db:init
 - Start the server
 
 ```
-npm start
+yarn start
 ```

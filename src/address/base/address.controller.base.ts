@@ -219,7 +219,7 @@ export class AddressControllerBase {
         },
       });
     } catch (error) {
-      if (isRecordNotFoundError(error)) {
+      if (isRecordNotFoundError(error as Error)) {
         throw new errors.NotFoundException(
           `No resource was found for ${JSON.stringify(params)}`
         );
@@ -260,7 +260,7 @@ export class AddressControllerBase {
         },
       });
     } catch (error) {
-      if (isRecordNotFoundError(error)) {
+      if (isRecordNotFoundError(error as Error)) {
         throw new errors.NotFoundException(
           `No resource was found for ${JSON.stringify(params)}`
         );
@@ -297,7 +297,7 @@ export class AddressControllerBase {
       possession: "any",
       resource: "Customer",
     });
-    const results = await this.service.findCustomers(params.id, {
+    let results = await this.service.findCustomers(params.id, {
       where: query,
       select: {
         address: {
@@ -315,6 +315,7 @@ export class AddressControllerBase {
         updatedAt: true,
       },
     });
+    results = results == null ? [] : results
     return results.map((result) => permission.filter(result));
   }
 

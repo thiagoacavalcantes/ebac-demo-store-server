@@ -10,6 +10,8 @@ export async function customSeed() {
     where: { username: username },
     data: {
       username,
+      firstName: "Admin",
+      lastName: "User",
     },
   });
 

@@ -39,7 +39,7 @@ export class AddressServiceBase {
   async findCustomers(
     parentId: string,
     args: Prisma.CustomerFindManyArgs
-  ): Promise<Customer[]> {
+  ): Promise<Customer[] | null> {
     return this.prisma.address
       .findUnique({
         where: { id: parentId },
