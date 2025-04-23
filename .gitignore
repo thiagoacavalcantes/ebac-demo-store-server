@@ -4,3 +4,5 @@
 /node_modules
 /dist
 .DS_Store
+/k6-swagger
+/k6-ebac-tests/node_modules

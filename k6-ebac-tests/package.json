@@ -1,0 +1,21 @@
+{
+  "name": "k6-ebac-tests",
+  "version": "1.0.0",
+  "description": "Exercicio Módulo 28",
+  "license": "ISC",
+  "author": "thiagoacavalcante",
+  "main": "index.js",
+  "scripts": {
+    "pretest": "webpack",
+    "test": "k6 run dist/user.test.js"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.10",
+    "@babel/preset-env": "^7.26.9",
+    "babel-loader": "^10.0.0",
+    "core-js": "^3.41.0",
+    "k6": "^0.0.0",
+    "webpack": "^5.99.6",
+    "webpack-cli": "^6.0.1"
+  }
+}
